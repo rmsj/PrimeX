@@ -14,7 +14,7 @@ class CreateProduct
      * @param array $data
      * @return Product|null
      */
-    public function executeOnce(array $data): ?Product
+    public function execute(array $data): ?Product
     {
         try {
             return Product::create($data);
@@ -30,7 +30,7 @@ class CreateProduct
      * @param array $data - in the format [[code => ..., name => ...], [code => ..., name => ...], ...]
      * @return Collection
      */
-    public function executeMany(array $data): ?Collection
+    public function executeBulk(array $data): ?Collection
     {
         try {
             $productsToAdd = collect($data);

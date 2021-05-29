@@ -13,7 +13,7 @@ class UpdateProduct
      * @param array $data
      * @return bool
      */
-    public function executeOnce(array $data): bool
+    public function execute(array $data): bool
     {
         try {
             if (empty($data['id']) && empty($data['code'])) {
@@ -39,12 +39,14 @@ class UpdateProduct
     }
 
     /**
-     * Executes action to create many products at once
+     * Executes action to update many products at once
+     * We use upsert because is the way laravel approaches INSERT ... ON DUPLICATE KEY UPDATE
+     * which is a faster way to update/insert multiple records on DB
      *
      * @param array $data - in the format [[code => ..., name => ...], [code => ..., name => ...], ...]
      * @return bool
      */
-    public function executeMany(array $data): bool
+    public function executeBulk(array $data): bool
     {
         try {
             $productsToAdd = collect($data);
@@ -54,7 +56,7 @@ class UpdateProduct
             }
             return true;
         } catch (\Exception $e) {
-            Log::error('ERROR CREATING PRODUCT: ' . $e->getTraceAsString());
+            Log::error('ERROR UPDATING PRODUCTs: ' . $e->getTraceAsString());
             return false;
         }
     }

@@ -4,14 +4,14 @@ namespace Tests\Unit;
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use PrimeX\Packages\Features\Products\Actions\CreateProduct;
-use PrimeX\Packages\Features\Products\Models\Product;
+use PrimeX\Packages\Features\Products\Actions\DeleteProduct;
 use Tests\TestCase;
 
 class CreateProductTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function testCreateSingleProduct()
+    public function testDeleteSingleProduct()
     {
         $data = [
             'code'        => '123456',
@@ -20,12 +20,13 @@ class CreateProductTest extends TestCase
         ];
 
         $product = (new CreateProduct())->execute($data);
+        $deleteAction = new DeleteProduct();
 
-        $this->assertInstanceOf(Product::class, $product);
-        $this->seeInDatabase('products', ['code' => '123456']);
+        $this->assertTrue($deleteAction->execute([$product->id]));
+        $this->notSeeInDatabase('products', ['code' => '123456']);
     }
 
-    public function testCreateMultipleProducts()
+    public function testDeleteMultipleProducts()
     {
         // TODO: this could be done with a data provider
         $codes = ['123456', 'abcdef', '987654'];
@@ -39,10 +40,11 @@ class CreateProductTest extends TestCase
         }
 
         $products = (new CreateProduct())->executeBulk($data);
+        $deleteAction = new DeleteProduct();
 
-        $this->assertTrue($products->count() === 3);
+        $this->assertTrue($deleteAction->execute($products->pluck('id')->toArray()));
         foreach ($codes as $code) {
-            $this->seeInDatabase('products', ['code' => $code]);
+            $this->notSeeInDatabase('products', ['code' => $code]);
         }
     }
 }
