@@ -1,0 +1,43 @@
+<?php
+
+namespace PrimeX\Packages\Features\Products\Models;
+
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Laravel\Lumen\Auth\Authorizable;
+
+class ProductStock extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'product_id',
+        'on_hand',
+        'taken',
+        'production_date',
+    ];
+
+    protected $casts = [
+        'production_date' => 'datetime'
+    ];
+
+    /**
+     * Stock entries for product
+     *
+     * @return BelongsTo
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+}
