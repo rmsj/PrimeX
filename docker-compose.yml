@@ -1,0 +1,57 @@
+version: "3"
+services:
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    image: primex/app
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - .:/var/www/html:cached
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+    networks:
+      - primex
+    depends_on:
+      - mysql
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "${APP_SECURE_PORT:-443}:443"
+      - "${APP_PORT:-80}:80"
+    volumes:
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+      - ./docker/nginx/ssl/:/etc/nginx/ssl/
+    networks:
+      primex:
+        aliases:
+          - dev.primex.com
+    depends_on:
+      - php
+
+  mysql:
+    image: "mysql:8.0.22"
+    ports:
+      - "${FORWARD_DB_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - "primex_mysql:/var/lib/mysql"
+    networks:
+      - primex
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping"]
+
+networks:
+  primex:
+    driver: bridge
+volumes:
+  primex_mysql:
+    driver: local

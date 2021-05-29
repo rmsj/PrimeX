@@ -1,0 +1,199 @@
+#!/usr/bin/env bash
+
+set -e
+
+export WWWUSER=${WWWUSER:-$UID}
+export WWWGROUP=${WWWGROUP:-$(id -g)}
+
+function start() {
+    echo "Starting the development environment"
+    docker-compose up -d $@
+}
+
+function stop() {
+    echo "Stopping the development environment"
+    docker-compose down --remove-orphans
+}
+
+function recreate() {
+    echo "Destroying and recreating all containers"
+    docker-compose up -d
+    docker-compose down --remove-orphans --rmi all
+    sudo rm -rf ./docker/volumes/mysql/data/*
+    docker-compose up -d --build
+}
+
+function shell() {
+    docker-compose exec php env COLUMNS=$COLUMNS LINES=$LINES bash
+}
+
+function artisan() {
+    docker-compose exec php php artisan $@
+}
+
+function logs() {
+    docker-compose logs -f $@
+}
+
+function migrate() {
+    docker-compose exec php php artisan migrate $@
+}
+
+function seed() {
+    docker-compose exec php php artisan db:seed $@
+}
+
+function truncate() {
+    docker-compose exec php php artisan db:truncate
+}
+
+function refresh() {
+    docker-compose exec php php artisan db:wipe
+    docker-compose exec php php artisan migrate:refresh
+    docker-compose exec php php artisan db:seed
+}
+
+function rollback() {
+    docker-compose exec php php artisan migrate:rollback $@
+}
+
+function phpunit() {
+    docker-compose exec php env vendor/bin/phpunit --stop-on-error --stop-on-failure ${@:2}
+}
+
+function composer() {
+    docker-compose exec php composer $@
+}
+
+function getBaseDir() {
+    ( cd `dirname $0`&& pwd )
+}
+
+function showUsage() {
+    echo "Usage: $0 <command>"
+    echo ""
+    showHelp $@
+}
+
+function showHelp() {
+    if [ $# == 0 ]; then
+        echo "Valid commands are:"
+        echo " help [<command>]"
+        echo " start"
+        echo " stop"
+        echo " recreate"
+        echo " shell"
+        echo " artisan ..."
+        echo " logs [<containerName>]"
+        echo " migrate [...]"
+        echo " rollback [...]"
+        echo " seed [...]"
+        echo " truncate [...]"
+        echo " phpunit [...]"
+        echo " composer [...]"
+    else
+        case "$1" in
+        start)
+            echo "Starts the contaners or updates their configuration"
+            ;;
+        stop)
+            echo "Shuts down the environment"
+            ;;
+        recreate)
+            echo "Shuts down the environment, destroy all containers and recreate them"
+            ;;
+        shell)
+            echo "Runs a shell in the PHP container"
+            ;;
+        artisan)
+            echo "Runs artisan in the PHP container with the provided parameters"
+            echo ""
+            echo "Example: $0 artisan migrate"
+            ;;
+        refresh)
+            echo "Wipes the database,re-create and seeds its"
+            echo ""
+            echo "Example: $0 refresh"
+            ;;
+        logs)
+            echo "Print and follow system logs for the specified container or all containers if no container is specified"
+            echo ""
+            echo "Hit CTRL-C to stop following the logs"
+            echo "Example: $0 logs php"
+            ;;
+        migrate)
+            echo "Run artisan migrate in the PHP container. Any additional switches and params are passed to migrate"
+            ;;
+        rollback)
+            echo "Run artisan migrate:rollback in the PHP container. Any additional switches and params are passed to migrate:rollback"
+            ;;
+        seed)
+            echo "Run artisan db:seed in the PHP container. Any additional switches and params are passed to db:seed"
+            ;;
+        truncate)
+            echo "Run artisan db:truncate in the PHP container."
+            ;;
+        phpunit)
+            echo "Run phpunit tests in the php container. Any additional switches and params are passed to phpunit"
+            echo ""
+            echo "Example: $0 phpunit tests/Unit"
+            ;;
+        composer)
+            echo "Run composer in the container. Any additional switches and params are passed to composer"
+            echo ""
+            echo "Example: $0 composer install"
+            ;;
+        *)
+            echo "Invalid command: $1"
+            ;;
+        esac
+    fi
+}
+
+case "$1" in
+help)
+    showHelp ${@:2}
+    ;;
+start)
+    start ${@:2}
+    ;;
+stop)
+    stop
+    ;;
+recreate)
+    recreate
+    ;;
+shell)
+    shell
+    ;;
+artisan)
+    artisan ${@:2}
+    ;;
+refresh)
+    refresh
+    ;;
+logs)
+    logs ${@:2}
+    ;;
+migrate)
+    migrate ${@:2}
+    ;;
+rollback)
+    rollback ${@:2}
+    ;;
+seed)
+    seed ${@:2}
+    ;;
+truncate)
+    truncate
+    ;;
+phpunit)
+    phpunit 0 ${@:2}
+    ;;
+composer)
+    composer ${@:2}
+    ;;
+*)
+    showUsage
+    ;;
+esac
