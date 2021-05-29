@@ -2,10 +2,9 @@
 
 namespace Tests\Unit;
 
-use PrimeX\Packages\Features\Products\Actions\CreateProducts;
+use PrimeX\Packages\Features\Products\Actions\CreateProduct;
 use PrimeX\Packages\Features\Products\Models\Product;
 use Laravel\Lumen\Testing\DatabaseMigrations;
-use PrimeX\Packages\Features\Products\Actions\CreateSingleProduct;
 use Tests\TestCase;
 
 class CreateProductTest extends TestCase
@@ -25,7 +24,7 @@ class CreateProductTest extends TestCase
             'description' => 'Product Test Desc',
         ];
 
-        $product = (new CreateSingleProduct())->execute($data);
+        $product = (new CreateProduct())->executeOnce($data);
 
         $this->assertInstanceOf(Product::class, $product);
         $this->seeInDatabase('products', ['code' => '123456']);
@@ -34,6 +33,7 @@ class CreateProductTest extends TestCase
     public function testCreateMultipleProducts()
     {
         $codes = ['123456', 'abcdef', '987654'];
+        $data = [];
         foreach ($codes as $code) {
             $data[] = [
                 'code' => $code,
@@ -42,7 +42,7 @@ class CreateProductTest extends TestCase
             ];
         }
 
-        $products = (new CreateProducts())->execute($data);
+        $products = (new CreateProduct())->executeMany($data);
 
         $this->assertTrue($products->count() === 3);
         foreach ($codes as $code) {
