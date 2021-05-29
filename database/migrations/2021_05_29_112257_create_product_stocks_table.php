@@ -21,6 +21,8 @@ class CreateProductStocksTable extends Migration
             $table->integer('taken');
             $table->timestamp('production_date');
             $table->timestamps();
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 
