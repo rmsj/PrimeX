@@ -40,24 +40,29 @@ class CreateProductStock
             $products = Product::whereIn('code', $productsCode)->get();
 
             // we need the product id, not the code, so we add it to our data entries
-            $productsStockToAdd->map(function(array $stock) use ($products) {
+            $stockToAdd = $productsStockToAdd->map(function(array $stock) use ($products) {
                 $stock['product_id'] = $products->firstWhere('code', $stock['product_code'])->id ?? null;
+                if (!isset($stock['taken'])) {
+                    $stock['taken'] = 0;
+                }
+                if (empty($stock['production_date'])) {
+                    $date = date('Y-m-d H:i:s', strtotime('now'));
+                } else {
+                    $date = preg_replace('#(\d{2})/(\d{2})/(\d{4})#', '$3-$2-$1', $stock['production_date']);
+                    $date = date('Y-m-d H:i:s', strtotime($date));
+                }
+                $stock['production_date'] = $date;
                 unset($stock['product_code']);
-
                 return $stock;
             })->filter(function (array $stock) {
                 // should not be the case, but we clear invalid entries where product code is empty
                 return !empty($stock['product_id']);
             });
 
-            foreach ($productsStockToAdd as &$stock) {
-                $stock['product_id'] = $products->where('code', $stock['product_code']);
-            }
-
-            foreach ($productsStockToAdd->chunk(500) as $chunk) {
+            foreach ($stockToAdd->chunk(500) as $chunk) {
                 ProductStock::insert($chunk->toArray());
             }
-            return $productsStockToAdd->count();
+            return $stockToAdd->count();
         } catch (\Exception $e) {
             Log::error('ERROR CREATING PRODUCT STOCK: ' . $e->getTraceAsString());
             return 0;

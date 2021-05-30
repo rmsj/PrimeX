@@ -42,7 +42,7 @@ class BulkAddProductStockCommand extends Command
         }
 
         if ($stock = (new CreateProductStock())->executeBulk($this->lines)) {
-            return $this->comment("Success. Added " . $stock->count() . " product stock records to database");
+            return $this->comment("Success. Added $stock product stock records to database");
         }
     }
 }

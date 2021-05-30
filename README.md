@@ -37,6 +37,14 @@ To know more about the available commands run
 `./devenv help`
 Then you can run `./devenv help <command_name>` for a description of what the command does.
 
+### More setup
+Change your `hosts` file on `/etc/hosts` (if you're on mac/linux) or `c:\Windows\System32\Drivers\etc\hosts` if you're 
+on windows - and include `127.0.0.1 primex.test`. This will allow navigating to `http://primex.test` and seeing the text
+`Exercise API. Built with Lumen (8.2.3) (Laravel Components ^8.0)`
+
+
+
+
 ## Tests
 I've added some basic tests that will run inside the docker environment.
 To run the test run `./vendor/bin/phpunit .` from the project root.
