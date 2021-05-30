@@ -16,7 +16,7 @@ class CreateProductStocksTable extends Migration
         // Changed the name of the table as I "child" tables should have the name of the "main table" as a prefix
         Schema::create('product_stocks', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('product_id');
+            $table->unsignedBigInteger('product_id');
             $table->integer('on_hand')->default(0);
             $table->integer('taken')->default(0);
             $table->timestamp('production_date');
