@@ -18,6 +18,7 @@ class CreateProductStock
     public function execute(array $data): ?ProductStock
     {
         try {
+            $data['production_date'] = $this->parseDate($data['production_date'] ?? null);
             return ProductStock::create($data);
         } catch (\Exception $e) {
             Log::error('ERROR CREATING PRODUCT STOCK: ' . $e->getTraceAsString());
@@ -45,13 +46,7 @@ class CreateProductStock
                 if (!isset($stock['taken'])) {
                     $stock['taken'] = 0;
                 }
-                if (empty($stock['production_date'])) {
-                    $date = date('Y-m-d H:i:s', strtotime('now'));
-                } else {
-                    $date = preg_replace('#(\d{2})/(\d{2})/(\d{4})#', '$3-$2-$1', $stock['production_date']);
-                    $date = date('Y-m-d H:i:s', strtotime($date));
-                }
-                $stock['production_date'] = $date;
+                $stock['production_date'] = $this->parseDate($stock['production_date']);
                 unset($stock['product_code']);
                 return $stock;
             })->filter(function (array $stock) {
@@ -67,5 +62,21 @@ class CreateProductStock
             Log::error('ERROR CREATING PRODUCT STOCK: ' . $e->getTraceAsString());
             return 0;
         }
+    }
+
+    /**
+     * Parses date into friendly format
+     *
+     * @param $date
+     * @return false|string
+     */
+    private function parseDate($date)
+    {
+        if ($date) {
+            return date('Y-m-d H:i:s', strtotime('now'));
+        }
+
+        $date = preg_replace('#(\d{2})/(\d{2})/(\d{4})#', '$3-$2-$1', $date);
+        return date('Y-m-d H:i:s', strtotime($date));
     }
 }

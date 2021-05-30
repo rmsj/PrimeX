@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Features;
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use PrimeX\Packages\Features\Products\Actions\CreateProduct;
@@ -27,10 +27,9 @@ class ProductControllerTest extends TestCase
     public function testUpdateProduct()
     {
         $code = "ABC123";
-        $this->createProductTest($code);
+        $product = $this->addProduct($code);
         $this->seeInDatabase('products', ['code' => $code]);
 
-        $product = Product::where('code', $code)->first();
         $data = [
             'id'   => $product->id,
             'name' => 'New Product Name',
@@ -44,22 +43,11 @@ class ProductControllerTest extends TestCase
     public function testDeleteProduct()
     {
         $code = "ABC123";
-        $this->createProductTest($code);
+        $product = $this->addProduct($code);
         $this->seeInDatabase('products', ['code' => $code]);
-        $product = Product::where('code', $code)->first();
 
         $this->delete(route('products.destroy', ['id' => $product->id]))
             ->assertResponseStatus(204);
         $this->notSeeInDatabase('products', ['code' => $code]);
-    }
-
-    private function createProductTest($code)
-    {
-        $data = [
-            'code'        => $code,
-            'name'        => 'Product Test',
-            'description' => 'Product Test Desc',
-        ];
-        (new CreateProduct())->execute($data);
     }
 }
