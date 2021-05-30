@@ -21,6 +21,6 @@ abstract class AbstractController extends Controller
     public function __construct()
     {
         // TODO: from here we can add auth, etc
-        $this->middleware(['api']);
+        // $this->middleware(['api']);
     }
 }

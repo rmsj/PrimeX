@@ -33,7 +33,7 @@ class Product extends Model
      */
     public function getStockOnHandAttribute()
     {
-        return $this->stock->onHandForProduct($this->id);
+        return $this->stock ? $this->stock->onHandForProduct($this->id) : 0;
     }
 
     /**

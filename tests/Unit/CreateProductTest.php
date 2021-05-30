@@ -38,9 +38,9 @@ class CreateProductTest extends TestCase
             ];
         }
 
-        $products = (new CreateProduct())->executeBulk($data);
+        $added = (new CreateProduct())->executeBulk($data);
 
-        $this->assertTrue($products->count() === 3);
+        $this->assertTrue($added === 3);
         foreach ($codes as $code) {
             $this->seeInDatabase('products', ['code' => $code]);
         }

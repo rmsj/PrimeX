@@ -46,9 +46,8 @@ class CreateProductStockTest extends TestCase
             $this->seeInDatabase('product_stocks', ['product_id' => $product->id]);
         }
 
-        $products = (new CreateProduct())->executeBulk($data);
-
-        $this->assertTrue($products->count() === 3);
+        $added = (new CreateProduct())->executeBulk($data);
+        $this->assertTrue($added === 3);
         foreach ($codes as $code) {
             $this->seeInDatabase('products', ['code' => $code]);
         }

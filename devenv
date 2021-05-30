@@ -43,10 +43,6 @@ function seed() {
     docker-compose exec php php artisan db:seed $@
 }
 
-function truncate() {
-    docker-compose exec php php artisan db:truncate
-}
-
 function refresh() {
     docker-compose exec php php artisan db:wipe
     docker-compose exec php php artisan migrate:refresh
@@ -88,7 +84,6 @@ function showHelp() {
         echo " migrate [...]"
         echo " rollback [...]"
         echo " seed [...]"
-        echo " truncate [...]"
         echo " phpunit [...]"
         echo " composer [...]"
     else
@@ -129,9 +124,6 @@ function showHelp() {
             ;;
         seed)
             echo "Run artisan db:seed in the PHP container. Any additional switches and params are passed to db:seed"
-            ;;
-        truncate)
-            echo "Run artisan db:truncate in the PHP container."
             ;;
         phpunit)
             echo "Run phpunit tests in the php container. Any additional switches and params are passed to phpunit"
@@ -183,9 +175,6 @@ rollback)
     ;;
 seed)
     seed ${@:2}
-    ;;
-truncate)
-    truncate
     ;;
 phpunit)
     phpunit 0 ${@:2}

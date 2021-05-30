@@ -71,12 +71,7 @@ abstract class AbstractPackageServiceProvider extends ServiceProvider
     protected function loadRoutesFrom($path)
     {
         $middleware = [];
-        if (substr($path, -7) == 'api.php') {
-            $middleware[] = 'api';
-        } else if (substr($path, -7) == 'web.php') {
-            $middleware[] = 'web';
-        }
-
+        // TODO: could load default middlewares here
         $this->loadRoutes($path, $middleware);
     }
 

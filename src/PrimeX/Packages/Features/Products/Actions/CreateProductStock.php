@@ -29,9 +29,9 @@ class CreateProductStock
      * Executes action to create many product stock entries at once
      *
      * @param array $data - in the format [[code => ..., on_hand => ...], [code => ..., on_hand => ...], ...]
-     * @return Collection
+     * @return int
      */
-    public function executeBulk(array $data): ?Collection
+    public function executeBulk(array $data): int
     {
         try {
             $productsStockToAdd = collect($data);
@@ -54,14 +54,13 @@ class CreateProductStock
                 $stock['product_id'] = $products->where('code', $stock['product_code']);
             }
 
-            $productStocks = collect();
             foreach ($productsStockToAdd->chunk(500) as $chunk) {
-                $productStocks->merge(ProductStock::create($chunk->toArray()));
+                ProductStock::insert($chunk->toArray());
             }
-            return $productStocks;
+            return $productsStockToAdd->count();
         } catch (\Exception $e) {
             Log::error('ERROR CREATING PRODUCT STOCK: ' . $e->getTraceAsString());
-            return collect();
+            return 0;
         }
     }
 }

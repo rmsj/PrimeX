@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use PrimeX\Packages\Features\Products\Actions\CreateProduct;
 use PrimeX\Packages\Features\Products\Actions\DeleteProduct;
+use PrimeX\Packages\Features\Products\Models\Product;
 use Tests\TestCase;
 
 class CreateProductTest extends TestCase
@@ -38,8 +39,9 @@ class CreateProductTest extends TestCase
                 'description' => 'Product Test Desc',
             ];
         }
-
-        $products = (new CreateProduct())->executeBulk($data);
+        // first we need to add
+        (new CreateProduct())->executeBulk($data);
+        $products = Product::query()->whereIn('code', $codes);
         $deleteAction = new DeleteProduct();
 
         $this->assertTrue($deleteAction->execute($products->pluck('id')->toArray()));

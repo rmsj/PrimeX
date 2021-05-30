@@ -28,20 +28,19 @@ class CreateProduct
      * Executes action to create many products at once
      *
      * @param array $data - in the format [[code => ..., name => ...], [code => ..., name => ...], ...]
-     * @return Collection
+     * @return int
      */
-    public function executeBulk(array $data): ?Collection
+    public function executeBulk(array $data): int
     {
         try {
             $productsToAdd = collect($data);
-            $products = collect();
             foreach ($productsToAdd->chunk(500) as $chunk) {
-                $products->merge(Product::create($chunk->toArray()));
+                Product::insert($chunk->toArray());
             }
-            return $products;
+            return $productsToAdd->count();
         } catch (\Exception $e) {
             Log::error('ERROR CREATING PRODUCT: ' . $e->getTraceAsString());
-            return collect();
+            return 0;
         }
     }
 }

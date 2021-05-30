@@ -14,5 +14,5 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return "Exercise API. Built with " . $router->app->version();
 });

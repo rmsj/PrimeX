@@ -44,7 +44,7 @@ class UpdateProductTest extends TestCase
             ];
         }
         // first we create
-        $products = (new CreateProduct())->executeBulk($data);
+        (new CreateProduct())->executeBulk($data);
 
         // now to update
         foreach ($data as $key => $product) {
