@@ -23,3 +23,5 @@ to get stock onHand summary.
 ## Development environment
 
 ## Security Vulnerabilities
+The Security part - authentication/authorization has not been developed as part of this exercise
+and the API is open as it is now. 

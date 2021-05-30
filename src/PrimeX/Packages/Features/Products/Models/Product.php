@@ -21,6 +21,20 @@ class Product extends Model
         'description',
     ];
 
+    protected $appends = [
+        'stock_on_hand'
+    ];
+
+    /**
+     * Summary of stock on hand for the product
+     *
+     * @return mixed
+     */
+    public function getStockOnHandAttribute()
+    {
+        return $this->stock->onHandForProduct($this->id);
+    }
+
     /**
      * Stock entries for product
      *

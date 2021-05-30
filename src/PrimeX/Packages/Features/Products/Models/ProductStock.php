@@ -31,6 +31,19 @@ class ProductStock extends Model
     ];
 
     /**
+     * Stock on hand for a specific product
+     *
+     * @param $productId
+     */
+    public function onHandForProduct($productId)
+    {
+        $this->query()->selectRaw('SUM(on_hand - taken) as stock_on_hand')
+            ->where('product_id', $productId)
+            ->first()
+            ->stock_on_hand;
+    }
+
+    /**
      * Stock entries for product
      *
      * @return BelongsTo

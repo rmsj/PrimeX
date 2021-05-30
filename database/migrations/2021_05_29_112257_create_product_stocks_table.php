@@ -17,8 +17,8 @@ class CreateProductStocksTable extends Migration
         Schema::create('product_stocks', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('product_id');
-            $table->integer('on_hand');
-            $table->integer('taken');
+            $table->integer('on_hand')->default(0);
+            $table->integer('taken')->default(0);
             $table->timestamp('production_date');
             $table->timestamps();
 
