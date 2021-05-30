@@ -75,4 +75,9 @@ with the `csv` files provided as part of the requirements and that I have added 
 
 ## Security
 The Security part - authentication/authorization has not been developed as part of this exercise
-and the API is open as it is now. 
+and the API is open as it is now.
+
+## TODO
+
+- Add more tests - go through the "unhappy path"
+- Security - lock the API
