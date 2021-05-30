@@ -5,6 +5,7 @@ namespace PrimeX\Packages\Features\Products\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder;
 
 class Product extends Model
 {
@@ -33,6 +34,17 @@ class Product extends Model
     public function getStockOnHandAttribute()
     {
         return $this->stock->onHandForProduct($this->id);
+    }
+
+    /**
+     * @param Builder $query
+     * @return mixed
+     */
+    public function scopeWithStock(Builder $query)
+    {
+        return $query->selectRaw('SUM(product_stocks.on_hand - product_stocks.taken) as stock_on_hand')
+            ->groupByRaw('product_stocks.product_id')
+            ->join(env('DB_DATABASE') . '.product_stocks', 'product.id', '=', 'product_stocks.product_id');
     }
 
     /**
