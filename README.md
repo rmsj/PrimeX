@@ -38,9 +38,11 @@ To know more about the available commands run
 Then you can run `./devenv help <command_name>` for a description of what the command does.
 
 ### More setup
-Change your `hosts` file on `/etc/hosts` (if you're on mac/linux) or `c:\Windows\System32\Drivers\etc\hosts` if you're 
+- Change your `hosts` file on `/etc/hosts` (if you're on mac/linux) or `c:\Windows\System32\Drivers\etc\hosts` if you're 
 on windows - and include `127.0.0.1 primex.test`. This will allow navigating to `http://primex.test` and seeing the text
 `Exercise API. Built with Lumen (8.2.3) (Laravel Components ^8.0)`
+
+- Rename the file `.env.example` to `.env`
 
 ### Postman collection
 To test the API use the API collection as per link `https://www.getpostman.com/collections/2a5bc9b355598543239c`
