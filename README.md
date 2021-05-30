@@ -1,24 +1,25 @@
-# Lumen PHP Framework
+# PrimeXConnect API
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/framework)](https://packagist.org/packages/laravel/lumen-framework)
+This project is based on Laravel Lumen framework.
+It is a test project for the PrimeXConnect following the requirements received:
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+## API Routes
 
-## Official Documentation
+- Add, Update, Delete product.
+- Add a stock onHand for a product.
+- Able to get products and product details.
+- Able to pass optional stock parameter in get products and product details API
+to get stock onHand summary.
+- Able to sort products by stock onHand by both asc and desc order.
+- Able to filter products by stock availability.
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+## Project must also be able to handle bulk create/update of products and stock 
 
-## Contributing
+- Able to bulk (5k +) insert/update products into database
+- Able to bulk (20k +) insert stock into the database.
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Project Structure
+
+## Development environment
 
 ## Security Vulnerabilities
-
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
