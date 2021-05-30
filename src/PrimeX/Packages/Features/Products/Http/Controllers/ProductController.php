@@ -24,12 +24,17 @@ class ProductController extends AbstractController
      */
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Product::query()->withStock();
 
         $limit = $request->get('limit', $this->pageSize);
 
         // only product with summarized stock on hand or product with all stock entries
         $detailed = $request->get('detailed', false);
+
+        // code parameter
+        if ($code = $request->get('code')) {
+            $query->where('code', $code);
+        }
 
         // filter by stock limit?
         if ($stock = $request->get('stock')) {
@@ -83,7 +88,7 @@ class ProductController extends AbstractController
      */
     public function show(int $id)
     {
-        $product = Product::query()->find($id);
+        $product = Product::query()->withStock()->find($id);
         if (empty($product)) {
             return $this->notFound('Product not found with ID ' . $id);
         }

@@ -31,9 +31,9 @@ class Product extends Model
      */
     public function scopeWithStock($query)
     {
-        return $query->selectRaw('products.*, SUM(product_stocks.on_hand - product_stocks.taken) as stock_on_hand')
-            ->groupByRaw('product_stocks.product_id')
-            ->join(env('DB_DATABASE') . '.product_stocks', 'products.id', '=', 'product_stocks.product_id');
+        return $query->selectRaw('products.*, SUM(COALESCE(product_stocks.on_hand, 0) - COALESCE(product_stocks.taken, 0)) as stock_on_hand')
+            ->groupByRaw('products.id')
+            ->leftJoin('product_stocks', 'products.id', '=', 'product_stocks.product_id');
     }
 
     /**
