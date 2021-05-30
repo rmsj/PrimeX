@@ -26,6 +26,7 @@ class UpdateProduct
                 return Product::where('id', $id)->update($data);
             }
 
+            // not really using this from API but added maybe for future usage - able to update product via code??
             if (!empty($data['code'])) {
                 $code = $data['code'];
                 unset($data['code']);

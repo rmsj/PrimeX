@@ -42,12 +42,17 @@ Change your `hosts` file on `/etc/hosts` (if you're on mac/linux) or `c:\Windows
 on windows - and include `127.0.0.1 primex.test`. This will allow navigating to `http://primex.test` and seeing the text
 `Exercise API. Built with Lumen (8.2.3) (Laravel Components ^8.0)`
 
+### Postman collection
+To test the API use the API collection as per link `https://www.getpostman.com/collections/2a5bc9b355598543239c`
 
-
+### Populate
+To test the API with some available data run the bul product and product stock creation as explained below. 
 
 ## Tests
 I've added some basic tests that will run inside the docker environment.
-To run the test run `./vendor/bin/phpunit .` from the project root.
+To run the test run `./devenv phpunit` from the project root.
+You can use whatever `phpunit` filter capability like so `./devenv phpunit --filter BulkAddProductStockCommandTest`
+to test only for a specific class.
 
 ## Test Commands for Bulk Add/Update
 

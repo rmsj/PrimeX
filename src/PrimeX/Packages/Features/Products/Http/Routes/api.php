@@ -11,7 +11,7 @@ $router->group([
         'as' => 'products.show', 'uses' => 'ProductController@show'
     ]);
 
-    $router->put('products/{id}', [
+    $router->put('products', [
         'as' => 'products.update', 'uses' => 'ProductController@update'
     ]);
 
@@ -21,6 +21,10 @@ $router->group([
 
     $router->post('products', [
         'as' => 'products.create', 'uses' => 'ProductController@store'
+    ]);
+
+    $router->post('product-stock', [
+        'as' => 'product-stock.create', 'uses' => 'ProductStockController@store'
     ]);
 
     $router->get('products', [

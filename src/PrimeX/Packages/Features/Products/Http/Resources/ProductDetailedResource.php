@@ -25,11 +25,12 @@ class ProductDetailedResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'          => $this->resource->id,
-            'code'        => $this->resource->code,
-            'name'        => $this->resource->name,
-            'description' => $this->resource->description,
-            'stock'       => ProductStockResource::collection($this->resource->stocks),
+            'id'            => $this->resource->id,
+            'code'          => $this->resource->code,
+            'name'          => $this->resource->name,
+            'description'   => $this->resource->description,
+            'stock_on_hand' => $this->resource->stock_on_hand,
+            'stock'         => ProductStockResource::collection($this->resource->stocks),
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace PrimeX\Packages\Features\Products\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use PrimeX\Packages\Core\AbstractController;
 use PrimeX\Packages\Features\Products\Actions\CreateProduct;
@@ -30,13 +31,19 @@ class ProductController extends AbstractController
         // only product with summarized stock on hand or product with all stock entries
         $detailed = $request->get('detailed', false);
 
+        // filter by stock limit?
+        if ($stock = $request->get('stock')) {
+            $stock = is_numeric($stock) ? $stock : 0;
+            $query->having('stock_on_hand', '>=', $stock);
+        }
+
         $sort = $request->get('sort');
         // default sort option
         if (!in_array($sort, ['asc', 'desc'])) {
             $sort = 'asc';
         }
-
-        $products = $query->get()->sortBy('stock_on_hand', SORT_REGULAR, $sort === 'desc');
+        $query->orderBy('stock_on_hand', $sort);
+        $products = $query->paginate($limit);
 
         if ($detailed) {
             return ProductDetailedResource::collection($products);
@@ -88,7 +95,7 @@ class ProductController extends AbstractController
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return JsonResponse|ProductDetailedResource
      * @throws ValidationException
      */
     public function update(Request $request)
@@ -96,13 +103,14 @@ class ProductController extends AbstractController
         $code = $request->get('code');
         $this->validate($request, [
             'id'          => 'required|exists:products,id',
-            'code'        => 'required|unique:products,code,' . $code,
-            'name'        => 'required|max:100',
+            'code'        => 'sometimes|required|unique:products,code,' . $code,
+            'name'        => 'sometimes|required|max:100',
             'description' => 'sometimes|nullable|max:255'
         ]);
 
         if ((new UpdateProduct())->execute($request->all())) {
-            return $this->noContent();
+            $product = Product::withStock()->where('products.id', $request->get('id'))->first();
+            return ProductDetailedResource::make($product);
         }
 
         // TODO: be more specific with the errror message

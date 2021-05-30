@@ -13,9 +13,9 @@ class CreateProductStock
      * Executes action to create a product stock
      *
      * @param array $data
-     * @return Product|null
+     * @return ProductStock|null
      */
-    public function execute(array $data): ?Product
+    public function execute(array $data): ?ProductStock
     {
         try {
             return ProductStock::create($data);
@@ -40,7 +40,7 @@ class CreateProductStock
             $products = Product::whereIn('code', $productsCode)->get();
 
             // we need the product id, not the code, so we add it to our data entries
-            $stockToAdd = $productsStockToAdd->map(function(array $stock) use ($products) {
+            $stockToAdd = $productsStockToAdd->map(function (array $stock) use ($products) {
                 $stock['product_id'] = $products->firstWhere('code', $stock['product_code'])->id ?? null;
                 if (!isset($stock['taken'])) {
                     $stock['taken'] = 0;

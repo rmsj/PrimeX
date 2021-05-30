@@ -9,7 +9,7 @@ trait BaseController
     /**
      * @var int used for displaying paginated results
      */
-    protected $pageSize = 20;
+    protected $pageSize = 10;
 
     /**
      * Generic API response
