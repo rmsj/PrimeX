@@ -40,8 +40,8 @@ class BulkUpdateProductsCommand extends Command
             return $this->error("Something went wrong");
         }
 
-        if ($products = (new UpdateProduct())->executeBulk($this->lines)) {
-            return $this->comment("Success. Updated " . $products->count() . " product records in database");
+        if ((new UpdateProduct())->executeBulk($this->lines)) {
+            return $this->comment("Success. Updated ". count($this->lines) . " product records in database");
         }
     }
 }

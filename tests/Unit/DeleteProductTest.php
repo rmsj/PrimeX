@@ -8,7 +8,7 @@ use PrimeX\Packages\Features\Products\Actions\DeleteProduct;
 use PrimeX\Packages\Features\Products\Models\Product;
 use Tests\TestCase;
 
-class CreateProductTest extends TestCase
+class DeleteProductTest extends TestCase
 {
     use DatabaseMigrations;
 
